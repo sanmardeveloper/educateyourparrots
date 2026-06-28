@@ -1,5 +1,7 @@
 package com.sanmar.educateyourparrots.mixin;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.sanmar.educateyourparrots.ModSoundConfig;
 import com.sanmar.educateyourparrots.ParrotSoundMemory;
 import net.minecraft.entity.Entity;
@@ -11,6 +13,8 @@ import net.minecraft.nbt.NbtList;
 import net.minecraft.nbt.NbtString;
 import net.minecraft.registry.Registries;
 import net.minecraft.sound.SoundEvent;
+import net.minecraft.storage.ReadView;
+import net.minecraft.storage.WriteView;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
@@ -24,7 +28,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static net.minecraft.entity.passive.ParrotEntity.getSoundPitch;
 
@@ -108,7 +114,7 @@ public class ParrotMixin implements ParrotSoundMemory {
         ParrotEntity parrot = (ParrotEntity)(Object)this;
 
         ParrotEntity.imitateNearbyMob(
-                parrot.getWorld(),
+                parrot.getEntityWorld(),
                 parrot
         );
     }
@@ -119,37 +125,21 @@ public class ParrotMixin implements ParrotSoundMemory {
     }
 
 
-    @Inject(method = "writeCustomDataToNbt", at = @At("TAIL"))
-    private void writeCustomSounds(NbtCompound nbt, CallbackInfo ci) {
+    @Inject(method = "writeCustomData", at = @At("TAIL"))
+    private void writeCustomSounds(WriteView view, CallbackInfo ci) {
+        view.put("LearnedSounds", SoundEvent.CODEC.listOf(), this.learnedSounds);
 
-        NbtList list = new NbtList();
-
-        for (SoundEvent sound : learnedSounds) {
-            list.add(NbtString.of(sound.getId().toString()));
-        }
-
-        nbt.put("LearnedSounds", list);
-        nbt.putInt("SoundInteractTimer", soundInteractTimer);
+        view.put("SoundInteractTimer", Codec.INT, this.soundInteractTimer);
     }
 
-    @Inject(method = "readCustomDataFromNbt", at = @At("TAIL"))
-    private void readCustomSounds(NbtCompound nbt, CallbackInfo ci) {
+    @Inject(method = "readCustomData", at = @At("TAIL"))
+    private void readCustomSounds(ReadView view, CallbackInfo ci) {
+        this.learnedSounds.clear();
 
-        learnedSounds.clear();
+        view.<List<SoundEvent>>read("LearnedSounds", SoundEvent.CODEC.listOf())
+                .ifPresent(this.learnedSounds::addAll);
 
-        if (!nbt.contains("LearnedSounds"))
-            return;
-
-        NbtList list = nbt.getList("LearnedSounds", NbtElement.STRING_TYPE);
-
-        for (int i = 0; i < list.size(); i++) {
-
-            Identifier id = Identifier.of(list.getString(i));
-
-            Registries.SOUND_EVENT.getOrEmpty(id)
-                    .ifPresent(learnedSounds::add);
-        }
-
-        soundInteractTimer = nbt.getInt("SoundInteractTimer");
+        this.soundInteractTimer = view.read("SoundInteractTimer", Codec.INT).orElse(1);
     }
+
 }

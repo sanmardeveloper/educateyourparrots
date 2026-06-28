@@ -28,7 +28,6 @@ public class ModSoundConfig {
 
             GSON.toJson(json, writer);
         } catch (IOException e) {
-            System.err.println("[EducateYourParrots] Не удалось сохранить файл конфигурации!");
             e.printStackTrace();
         }
     }
@@ -46,7 +45,6 @@ public class ModSoundConfig {
                 parrotsVolume = json.get("parrotsVolume").getAsDouble();
             }
         } catch (Exception e) {
-            System.err.println("[EducateYourParrots] Cannot load saved value using default.");
             e.printStackTrace();
         }
     }
