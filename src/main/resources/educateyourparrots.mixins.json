@@ -1,0 +1,18 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "com.sanmar.educateyourparrots.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "ParrotMixin",
+    "SoundLearningMixin"
+  ],
+  "client": [
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "overwrites": {
+    "requireAnnotations": true
+  }
+}

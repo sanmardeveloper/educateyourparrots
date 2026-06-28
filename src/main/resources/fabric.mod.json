@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "id": "educateyourparrots",
+  "version": "${version}",
+  "name": "Educate Your Parrots",
+  "description": "With this mod, your parrots will remember the sounds they hear and replay them at random moments during gameplay, or whenever you ask them to.",
+  "authors": ["ItsSanmar"],
+  "contact": {},
+  "license": "MIT",
+  "icon": "assets/educateyourparrots/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "client": [
+      "com.sanmar.educateyourparrots.client.EducateyourparrotsClient"
+    ],
+    "main": [
+      "com.sanmar.educateyourparrots.Educateyourparrots"
+    ]
+  },
+  "mixins": [
+    "educateyourparrots.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=${loader_version}",
+    "fabric-api": "*",
+    "minecraft": "${minecraft_version}"
+  }
+}
