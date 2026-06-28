@@ -37,11 +37,11 @@ public class SoundLearningMixin {
     );
 
     @Inject(method = "playSound", at = @At("HEAD"))
-    private void onPlaySound(PlayerEntity source, double x, double y, double z, RegistryEntry<SoundEvent> sound, SoundCategory category, float volume, float pitch, long seed, CallbackInfo ci) {
+    private void onPlaySound(Entity source, double x, double y, double z, RegistryEntry<SoundEvent> sound, SoundCategory category, float volume, float pitch, long seed, CallbackInfo ci) {
         if (sound == null
                 || IGNORED_CATEGORIES.contains(category)
                 || sound.value()
-                .getId()
+                .id()
                 .getPath()
                 .startsWith("entity.parrot")) {
 
@@ -54,11 +54,11 @@ public class SoundLearningMixin {
     }
 
     @Inject(method = "playSoundFromEntity", at = @At("HEAD"))
-    private void onPlaySound(PlayerEntity source, Entity entity, RegistryEntry<SoundEvent> sound, SoundCategory category, float volume, float pitch, long seed, CallbackInfo ci) {
+    private void onPlaySound(Entity source, Entity entity, RegistryEntry<SoundEvent> sound, SoundCategory category, float volume, float pitch, long seed, CallbackInfo ci) {
         if (sound == null
                 || IGNORED_CATEGORIES.contains(category)
                 || sound.value()
-                .getId()
+                .id()
                 .getPath()
                 .startsWith("entity.parrot")) {
             return;
@@ -117,7 +117,7 @@ public class SoundLearningMixin {
                 (int) y,
                 (int) z,
                 world.getRegistryKey().getValue().getPath(),
-                sound.getId()
+                sound.id()
         );
     }
 }
