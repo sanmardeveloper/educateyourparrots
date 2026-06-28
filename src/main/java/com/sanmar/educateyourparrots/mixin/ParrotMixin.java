@@ -1,5 +1,6 @@
 package com.sanmar.educateyourparrots.mixin;
 
+import com.sanmar.educateyourparrots.ModSoundConfig;
 import com.sanmar.educateyourparrots.ParrotSoundMemory;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.passive.ParrotEntity;
@@ -85,13 +86,13 @@ public class ParrotMixin implements ParrotSoundMemory {
         }
 
         SoundEvent sound = sounds.get(world.random.nextInt(sounds.size()));
-        parrot.playSound(sound, 0.6F, getSoundPitch(world.random));
+        parrot.playSound(sound, (float) ModSoundConfig.parrotsVolume, getSoundPitch(world.random));
 
         cir.setReturnValue(true);
     }
 
     @Inject(method = "interactMob", at = @At("HEAD"))
-    private void testSound(PlayerEntity player, Hand hand, CallbackInfoReturnable<ActionResult> cir) {
+    private void speak(PlayerEntity player, Hand hand, CallbackInfoReturnable<ActionResult> cir) {
         if (!player.isSneaking() || hand != Hand.MAIN_HAND || !player.getMainHandStack().isEmpty()) {
             return;
         }

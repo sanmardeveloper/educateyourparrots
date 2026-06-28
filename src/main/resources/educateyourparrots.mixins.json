@@ -8,6 +8,7 @@
     "SoundLearningMixin"
   ],
   "client": [
+    "SoundOptionsScreenMixin"
   ],
   "injectors": {
     "defaultRequire": 1
